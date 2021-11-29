@@ -272,7 +272,7 @@ def assignFunction(operation):
 
 # specify the input file.
 
-with open("transaction2.txt", 'r') as text:
+with open("transaction.txt", 'r') as text:
     for line in text:
         inputList.append(line)
 for operation in inputList:
