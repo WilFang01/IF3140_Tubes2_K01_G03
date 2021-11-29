@@ -57,7 +57,9 @@ def validationTest(j, listOfTransactions) -> bool:
 
 def OCC(total_transaction, schedule_array):
 
+    print()
     print("Serial Optimistic Concurrency Control :")
+    print("=======================================")
 
     # List All Available Transaction
     listOfTransactions = []
@@ -67,36 +69,43 @@ def OCC(total_transaction, schedule_array):
     
     # Read Phase
     for i in range (len(schedule_array)):
-        print("--Sekarang lagi bagian", schedule_array[i])
+        # print("--Sekarang lagi bagian", schedule_array[i])
         if (schedule_array[i][0] == "R" or schedule_array[i][0] == "W"):
             id = int(schedule_array[i][1]) - 1
 
             # Kasus timestamp transaksi belum dimulai
             if (listOfTransactions[id].startTS == None):
-                print("Inisiasi")
+                # print("Inisiasi")
+                time.sleep(0.1)
                 listOfTransactions[id].startTS = time.time()
             
             if (schedule_array[i][0] == "R"):
-                print("Masuk Read")
+                print("Read", schedule_array[i][2], "di transaksi T", end="")
+                print(schedule_array[i][1])
                 listOfTransactions[id].readVar.append(schedule_array[i][2])
             else:
-                print("Masuk Write")
+                print("Write", schedule_array[i][2], "di transaksi T", end="")
+                print(schedule_array[i][1])
                 listOfTransactions[id].writeVar.append(schedule_array[i][2])
         
         elif (schedule_array[i][0] == "C"):
-            print("Masuk Commit")
+            print("Commit transaksi T", end="")
+            print(schedule_array[i][1])
             id = int(schedule_array[i][1]) - 1
+            time.sleep(0.1)
             listOfTransactions[id].validationTS = time.time()
             # Validation Phase
             validateResult = validationTest(listOfTransactions[id], listOfTransactions)
             # Write Phase
             if (validateResult):
+                time.sleep(0.1)
                 listOfTransactions[id].finishTS = time.time()
-                print(listOfTransactions[id])
-                print(f"Transaction with id {id+1} success")
+                # print(listOfTransactions[id])
+                print(f"->Transaction with id {id+1} success")
             else:
-                print(listOfTransactions[id])
-                print(f"Transaction with id {id+1} failed")
+                # print(listOfTransactions[id])
+                print(f"->Transaction with id {id+1} failed")
+                print(f"Transaction T{id+1} aborted")
                 return False
     
     return True
@@ -104,7 +113,9 @@ def OCC(total_transaction, schedule_array):
     
 def main():
     
+    print()
     print("Starting Serial Optimistic Concurrency Control (OCC)")
+    print("====================================================")
     total_transaction = int(input("Total Transaction : "))
 
     schedule = []
@@ -121,9 +132,9 @@ def main():
         print("Format Salah !")
     
     if (OCC(total_transaction, schedule)):
-        print("Validasi Sukses")
+        print("=> Validasi Sukses")
     else :
-        print("Validasi Gagal")
+        print("=> Validasi Gagal")
 
 
 if __name__ == '__main__':
